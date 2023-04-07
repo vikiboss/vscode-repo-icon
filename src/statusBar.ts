@@ -38,7 +38,8 @@ export class StatusBar {
     const configPath = path.join(gitFolderPath, 'config')
     const configFileContent = fs.readFileSync(configPath, 'utf8')
 
-    const githubUrlRegExp = /url\s*=\s*https:\/\/github\.com\/([^/]+)\/([^/]+)\.git/g
+    const githubUrlRegExp =
+      /url\s*=\s*(https?:\/\/|git@)github\.com[:/]([^/]+)\/([^/]+)((\.git)|\n)/g
     const match = githubUrlRegExp.exec(configFileContent)
 
     if (!match) {
@@ -46,9 +47,11 @@ export class StatusBar {
       return
     }
 
-    const [_, owner, repo] = match
-    this.githubRepoUrl = `https://github.com/${owner}/${repo}`
-    this.statusBarItem.tooltip = `Open \`@${owner}/${repo}\` in GitHub`
+    const [owner, repo] = match.slice(2)
+    const repository = repo.replace('.git', '')
+
+    this.githubRepoUrl = `https://github.com/${owner}/${repository}`
+    this.statusBarItem.tooltip = `Open \`@${owner}/${repository}\` in GitHub`
     this.statusBarItem.show()
   }
 }
