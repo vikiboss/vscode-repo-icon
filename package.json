@@ -1,0 +1,39 @@
+{
+  "name": "open-in-github",
+  "displayName": "open in GitHub status bar icon",
+  "description": "Display a GitHub icon in the status bar that links to the repository",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "onDidChangeActiveTextEditor",
+    "onDidChangeWorkspaceFolders",
+    "onDidChangeConfiguration"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.openGitHubRepo",
+        "title": "Open in GitHub"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "16.x",
+    "@types/vscode": "^1.77.0",
+    "@vmoe/eslint-config": "^0.3.1",
+    "@vmoe/prettier-config": "^1.0.0",
+    "eslint": "^8.37.0",
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.3"
+  }
+}
