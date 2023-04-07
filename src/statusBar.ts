@@ -4,10 +4,21 @@ import * as vscode from 'vscode'
 
 export class StatusBar {
   private statusBarItem: vscode.StatusBarItem
+  private githubRepoUrl = ''
 
   constructor() {
     const direction = vscode.StatusBarAlignment.Right
     this.statusBarItem = vscode.window.createStatusBarItem(direction)
+
+    this.statusBarItem.text = `$(github)`
+    this.statusBarItem.command = 'extension.openInGitHub'
+    this.statusBarItem.hide()
+
+    vscode.commands.registerCommand('extension.openInGitHub', () => {
+      if (this.githubRepoUrl) {
+        vscode.env.openExternal(vscode.Uri.parse(this.githubRepoUrl))
+      }
+    })
   }
 
   public updateStatusBarItem(): void {
@@ -36,15 +47,8 @@ export class StatusBar {
     }
 
     const [_, owner, repo] = match
-    const githubRepoUrl = `https://github.com/${owner}/${repo}`
-
-    this.statusBarItem.text = `$(github)`
+    this.githubRepoUrl = `https://github.com/${owner}/${repo}`
     this.statusBarItem.tooltip = `Open \`@${owner}/${repo}\` in GitHub`
-    this.statusBarItem.command = 'extension.openGitHubRepo'
     this.statusBarItem.show()
-
-    vscode.commands.registerCommand('extension.viki.openRepoInGitHub', () => {
-      vscode.env.openExternal(vscode.Uri.parse(githubRepoUrl))
-    })
   }
 }
