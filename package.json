@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "16.x",
-    "@types/vscode": "^1.77.0",
+    "@types/vscode": "^1.60.0",
     "@vmoe/eslint-config": "^0.3.1",
     "@vmoe/prettier-config": "^1.0.0",
     "eslint": "^8.37.0",
