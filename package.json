@@ -3,7 +3,8 @@
   "displayName": "Open Repo in GitHub",
   "publisher": "vikiboss",
   "description": "Display a GitHub icon in the status bar that links to the repository",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.60.0"
   },
