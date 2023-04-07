@@ -1,6 +1,7 @@
 {
   "name": "open-in-github",
-  "displayName": "open in GitHub status bar icon",
+  "displayName": "Open in GitHub",
+  "publisher": "vikiboss",
   "description": "Display a GitHub icon in the status bar that links to the repository",
   "version": "0.0.1",
   "engines": {
