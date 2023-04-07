@@ -43,7 +43,7 @@ export class StatusBar {
     this.statusBarItem.command = 'extension.openGitHubRepo'
     this.statusBarItem.show()
 
-    vscode.commands.registerCommand('extension.openGitHubRepo', () => {
+    vscode.commands.registerCommand('extension.viki.openRepoInGitHub', () => {
       vscode.env.openExternal(vscode.Uri.parse(githubRepoUrl))
     })
   }
