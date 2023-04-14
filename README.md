@@ -1,13 +1,19 @@
-# Open in GitHub for vscode
+# Open Repo in GitHub for vscode
 
-Display a GitHub icon in the status bar that links to the repository.
+A simple extension for [vscode](https://code.visualstudio.com/) to **display a GitHub icon** in the status bar that **links to the repository**.
 
-## Where is it?
+## Installation
+
+Install it from **vscode extension tab** or [vscode marketplace](https://marketplace.visualstudio.com/items?itemName=vikiboss.viki-open-in-github), or you may prefer to use terminal:
+
+```bash
+code --install-extension vikiboss.viki-open-in-github
+```
+
+## Where is the icon?
 
 ![screenshot](https://gh-raw.deno.dev/vikiboss/vscode-open-in-github/main/screenshot.png)
 
-Get it from [vscode marketplace](https://marketplace.visualstudio.com/items?itemName=vikiboss.viki-open-in-github) now!
-
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) License © 2023-PRESENT Viki
