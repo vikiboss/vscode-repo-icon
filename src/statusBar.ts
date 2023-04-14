@@ -2,6 +2,8 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import * as vscode from 'vscode'
 
+const REG_MATCH_REPO = /url\s*=\s*(https?:\/\/|git@)github\.com[:/]([^/]+)\/([^/]+)((\.git)|\n)/g
+
 export class StatusBar {
   private statusBarItem: vscode.StatusBarItem
   private githubRepoUrl = ''
@@ -10,9 +12,9 @@ export class StatusBar {
     const direction = vscode.StatusBarAlignment.Right
     this.statusBarItem = vscode.window.createStatusBarItem(direction)
 
+    this.statusBarItem.hide()
     this.statusBarItem.text = `$(github)`
     this.statusBarItem.command = 'extension.openInGitHub'
-    this.statusBarItem.hide()
 
     vscode.commands.registerCommand('extension.openInGitHub', () => {
       if (this.githubRepoUrl) {
@@ -22,29 +24,26 @@ export class StatusBar {
   }
 
   public updateStatusBarItem(): void {
-    if (!vscode.workspace.workspaceFolders) {
-      this.statusBarItem.hide()
-      return
+    const folders = vscode.workspace.workspaceFolders
+
+    if (!folders || !folders.length) {
+      return this.statusBarItem.hide()
     }
 
-    const dirPath = vscode.workspace.workspaceFolders[0].uri.fsPath
+    const dirPath = folders[0].uri.fsPath
     const gitFolderPath = path.join(dirPath, '.git')
 
     if (!fs.existsSync(gitFolderPath)) {
-      this.statusBarItem.hide()
-      return
+      return this.statusBarItem.hide()
     }
 
     const configPath = path.join(gitFolderPath, 'config')
-    const configFileContent = fs.readFileSync(configPath, 'utf8')
+    const configFileContent = fs.readFileSync(configPath, 'utf-8')
 
-    const githubUrlRegExp =
-      /url\s*=\s*(https?:\/\/|git@)github\.com[:/]([^/]+)\/([^/]+)((\.git)|\n)/g
-    const match = githubUrlRegExp.exec(configFileContent)
+    const match = REG_MATCH_REPO.exec(configFileContent)
 
     if (!match) {
-      this.statusBarItem.hide()
-      return
+      return this.statusBarItem.hide()
     }
 
     const [owner, repo] = match.slice(2)
