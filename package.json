@@ -1,7 +1,7 @@
 {
   "name": "vscode-repo-icon",
   "displayName": "Repo Icon",
-  "publisher": "viki",
+  "publisher": "vikiboss",
   "description": "Display a GitHub icon in the status bar that links to current git repository",
   "version": "0.0.1",
   "icon": "icon.png",
