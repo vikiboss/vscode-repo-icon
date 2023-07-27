@@ -1,9 +1,9 @@
 {
-  "name": "viki-open-in-github",
-  "displayName": "Open Repo in GitHub",
-  "publisher": "vikiboss",
-  "description": "Display a GitHub icon in the status bar that links to the repository",
-  "version": "0.2.1",
+  "name": "vscode-repo-icon",
+  "displayName": "Repo Icon",
+  "publisher": "viki",
+  "description": "Display a GitHub icon in the status bar that links to current git repository",
+  "version": "0.0.1",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.60.0"
@@ -14,30 +14,17 @@
     "url": "https://viki.moe"
   },
   "repository": {
-    "url": "https://github.com/vikiboss/vscode-open-in-github",
+    "url": "https://github.com/vikiboss/vscode-repo-icon",
     "type": "github"
   },
   "activationEvents": [
-    "onStartupFinished",
-    "onDidChangeActiveTextEditor",
-    "onDidChangeWorkspaceFolders",
-    "onDidChangeConfiguration"
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "extension.openInGitHub",
-        "title": "Open in GitHub",
-        "icon": "$(github)",
-        "shortTitle": "Open this GitHub repo in default Browser"
-      }
-    ]
-  },
   "scripts": {
-    "vscode:prepublish": "pnpm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p .",
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
@@ -49,5 +36,8 @@
     "prettier": "^2.8.7",
     "typescript": "^5.0.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "simple-git": "^3.19.1"
+  }
 }

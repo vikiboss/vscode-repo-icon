@@ -1,12 +1,14 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import { simpleGit } from 'simple-git'
 import * as vscode from 'vscode'
 
-const REG_MATCH_REPO = /url\s*=\s*(https?:\/\/|git@)github\.com[:/]([^/]+)\/([^/]+)((\.git)|\n)/g
+const reg = /.((com)|(cn)|(net))[/:]([a-zA-Z0-9.]+)\/([a-zA-Z0-9.]+)\s*$/
 
 export class StatusBar {
   private statusBarItem: vscode.StatusBarItem
   private githubRepoUrl = ''
+  private projectName = ''
 
   constructor() {
     const direction = vscode.StatusBarAlignment.Right
@@ -23,34 +25,44 @@ export class StatusBar {
     })
   }
 
-  public updateStatusBarItem(): void {
+  public async updateStatusBarItem(): Promise<void> {
     const folders = vscode.workspace.workspaceFolders
+    const file = vscode.window.activeTextEditor
 
-    if (!folders || !folders.length) {
+    const isWorkspaceOpen = folders && folders.length > 1
+    const isFileOpen = file && fs.existsSync(file?.document.uri.fsPath)
+
+    let repoPath = ''
+
+    if (isWorkspaceOpen) {
+      repoPath = folders[0].uri.fsPath
+    } else if (isFileOpen) {
+      repoPath = file?.document.uri.fsPath
+    } else {
       return this.statusBarItem.hide()
     }
 
-    const dirPath = folders[0].uri.fsPath
-    const gitFolderPath = path.join(dirPath, '.git')
+    const dirPath = path.dirname(repoPath)
+    const remote = (await simpleGit(dirPath).listRemote(['--get-url'])).trim()
 
-    if (!fs.existsSync(gitFolderPath)) {
+    if (!remote) {
       return this.statusBarItem.hide()
     }
 
-    const configPath = path.join(gitFolderPath, 'config')
-    const configFileContent = fs.readFileSync(configPath, 'utf-8')
+    if (!remote.startsWith('http')) {
+      const info = remote.replace(/((git@)|(\.git\s*$))/g, '').split(/[:/]/)
+      const [git, user, repo, sub] = info.map((e) => e.trim())
 
-    const match = REG_MATCH_REPO.exec(configFileContent)
+      this.projectName = `\`${user}/${sub ? `${repo}/${sub}` : repo}\``
+      this.githubRepoUrl = `https://${git}/${user}/${repo}`
+    } else {
+      const [, , , , , user, repo] = reg.exec(remote) || []
 
-    if (!match) {
-      return this.statusBarItem.hide()
+      this.projectName = `\`${user}/${repo}\``
+      this.githubRepoUrl = remote
     }
 
-    const [owner, repo] = match.slice(2)
-    const repository = repo.replace('.git', '')
-
-    this.githubRepoUrl = `https://github.com/${owner}/${repository}`
-    this.statusBarItem.tooltip = `Open \`@${owner}/${repository}\` in GitHub`
+    this.statusBarItem.tooltip = `Open ${this.projectName} in Browser`
     this.statusBarItem.show()
   }
 }

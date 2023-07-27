@@ -1,6 +1,6 @@
 # Open Repo in GitHub for vscode
 
-A simple extension for [vscode](https://code.visualstudio.com/) to **display a GitHub icon** in the status bar that **links to the repository**.
+A simple extension for [vscode](https://code.visualstudio.com/) to **display a GitHub icon** in the status bar that **links to current repository**.
 
 ## Installation
 
