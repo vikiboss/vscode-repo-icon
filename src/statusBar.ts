@@ -2,8 +2,9 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { simpleGit } from 'simple-git'
 import * as vscode from 'vscode'
+import { MarkdownString } from 'vscode'
 
-const reg = /.(?:com|cn|top|xyz|io|net|org|moe)[/:]([a-zA-Z0-9.-_]+)\/([a-zA-Z0-9.-_]+)\s*$/
+const reg = /\.(?:com|cn|top|xyz|io|net|org|moe)[/:]([a-zA-Z0-9._-]+)\/([a-zA-Z0-9._-]+)\s*$/
 
 export class StatusBar {
   private statusBarItem: vscode.StatusBarItem
@@ -44,26 +45,29 @@ export class StatusBar {
     }
 
     const dirPath = path.dirname(repoPath)
-    const remote = (await simpleGit(dirPath).listRemote(['--get-url'])).trim()
 
-    if (!remote) {
-      return this.statusBarItem.hide()
-    }
+    try {
+      const remote = (await simpleGit(dirPath).listRemote(['--get-url'])).trim()
 
-    if (!remote.startsWith('http')) {
-      const info = remote.replace(/((git@)|(\.git\s*$))/g, '').split(/[:/]/)
-      const [git, user, repo, sub] = info.map((e) => e.trim())
+      if (!remote) {
+        return this.statusBarItem.hide()
+      }
 
-      this.projectName = `\`${user}/${sub ? `${repo}/${sub}` : repo}\``
-      this.repoUrl = `https://${git}/${user}/${repo}`
-    } else {
-      const [, user, repo] = reg.exec(remote) || []
+      if (!remote.startsWith('http')) {
+        const info = remote.replace(/((git@)|(\.git\s*$))/g, '').split(/[:/]/)
+        const [domain, user, repo, sub] = info.map((e) => e.trim())
 
-      this.projectName = `\`${user}/${repo}\``
-      this.repoUrl = remote.replace(/\.git\s*$/, '')
-    }
+        this.projectName = `${user}/${sub ? `${repo}/${sub}` : repo}`
+        this.repoUrl = `https://${domain}/${user}/${repo}`
+      } else {
+        const [_, user = '', repo = ''] = reg.exec(remote) || []
 
-    this.statusBarItem.tooltip = `Open ${this.projectName} in Browser`
-    this.statusBarItem.show()
+        this.projectName = `${user}/${repo?.replace('.git', '')}`
+        this.repoUrl = remote.replace('.git', '')
+      }
+
+      this.statusBarItem.tooltip = new MarkdownString(`Open \`${this.projectName}\` in Browser`)
+      this.statusBarItem.show()
+    } catch (e) {}
   }
 }
