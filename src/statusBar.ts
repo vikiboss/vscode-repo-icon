@@ -3,11 +3,11 @@ import * as path from 'node:path'
 import { simpleGit } from 'simple-git'
 import * as vscode from 'vscode'
 
-const reg = /.((com)|(cn)|(net))[/:]([a-zA-Z0-9.]+)\/([a-zA-Z0-9.]+)\s*$/
+const reg = /.(?:com|cn|top|xyz|io|net|org|moe)[/:]([a-zA-Z0-9.]+)\/([a-zA-Z0-9.]+)\s*$/
 
 export class StatusBar {
   private statusBarItem: vscode.StatusBarItem
-  private githubRepoUrl = ''
+  private repoUrl = ''
   private projectName = ''
 
   constructor() {
@@ -16,11 +16,12 @@ export class StatusBar {
 
     this.statusBarItem.hide()
     this.statusBarItem.text = `$(github)`
-    this.statusBarItem.command = 'extension.openInGitHub'
+    this.statusBarItem.command = 'extension.openRepoInBrowser'
 
-    vscode.commands.registerCommand('extension.openInGitHub', () => {
-      if (this.githubRepoUrl) {
-        vscode.env.openExternal(vscode.Uri.parse(this.githubRepoUrl))
+    vscode.commands.registerCommand('extension.openRepoInBrowser', () => {
+      if (this.repoUrl) {
+        const link = vscode.Uri.parse(this.repoUrl)
+        vscode.env.openExternal(link)
       }
     })
   }
@@ -54,12 +55,12 @@ export class StatusBar {
       const [git, user, repo, sub] = info.map((e) => e.trim())
 
       this.projectName = `\`${user}/${sub ? `${repo}/${sub}` : repo}\``
-      this.githubRepoUrl = `https://${git}/${user}/${repo}`
+      this.repoUrl = `https://${git}/${user}/${repo}`
     } else {
-      const [, , , , , user, repo] = reg.exec(remote) || []
+      const [, user, repo] = reg.exec(remote) || []
 
       this.projectName = `\`${user}/${repo}\``
-      this.githubRepoUrl = remote.replace(/\.git\s*$/, '')
+      this.repoUrl = remote.replace(/\.git\s*$/, '')
     }
 
     this.statusBarItem.tooltip = `Open ${this.projectName} in Browser`

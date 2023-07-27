@@ -1,6 +1,8 @@
 # Repo Icon
 
-A simple extension for [vscode](https://code.visualstudio.com/) to **display a GitHub icon** in the status bar that **links to current repository**. Support major repository.
+A simple extension for [vscode](https://code.visualstudio.com/) to **display a GitHub icon** in the status bar that **links to current repository**.
+
+Support many major repositories, such as GitHub, GitLab (both .com and .org), Bitbucket, Gitee, Gitea, etc.
 
 ## Installation
 
