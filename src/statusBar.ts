@@ -59,7 +59,7 @@ export class StatusBar {
       const [, , , , , user, repo] = reg.exec(remote) || []
 
       this.projectName = `\`${user}/${repo}\``
-      this.githubRepoUrl = remote
+      this.githubRepoUrl = remote.replace(/\.git\s*$/, '')
     }
 
     this.statusBarItem.tooltip = `Open ${this.projectName} in Browser`
