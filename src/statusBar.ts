@@ -3,7 +3,7 @@ import * as path from 'node:path'
 import { simpleGit } from 'simple-git'
 import * as vscode from 'vscode'
 
-const reg = /.(?:com|cn|top|xyz|io|net|org|moe)[/:]([a-zA-Z0-9.]+)\/([a-zA-Z0-9.]+)\s*$/
+const reg = /.(?:com|cn|top|xyz|io|net|org|moe)[/:]([a-zA-Z0-9.-_]+)\/([a-zA-Z0-9.-_]+)\s*$/
 
 export class StatusBar {
   private statusBarItem: vscode.StatusBarItem
